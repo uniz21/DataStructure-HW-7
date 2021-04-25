@@ -178,7 +178,7 @@ int insertLast(headNode* h, int key) {
 	p = h->first;
 
 	while (p != NULL) {
-		if (p->rlink = NULL)
+		if (p->rlink == NULL)
 		{
 			lastnode->key = key;
 			lastnode->llink = p;
@@ -205,12 +205,12 @@ int deleteLast(headNode* h) {
 	p = h->first;
 
 	while (p != NULL) {
-		if (p->llink = NULL && p->rlink == NULL)
+		if (p->llink == NULL && p->rlink == NULL)
 		{
 			deleteFirst(h);
 			break;
 		}
-		if (p->rlink = NULL)
+		if (p->rlink == NULL)
 		{
 			prev = p->llink;
 			prev->rlink = NULL;
@@ -235,6 +235,7 @@ int insertFirst(headNode* h, int key) {
 	firstnode->key = key;
 	firstnode->llink = NULL;
 	firstnode->rlink = h->first;
+	if (h->first != NULL) h->first->llink = firstnode;
 	h->first = firstnode;
 
 	return 0;
@@ -281,6 +282,44 @@ int invertList(headNode* h) {
 /* 리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 */
 int insertNode(headNode* h, int key) {
 
+	listNode* p;
+	listNode* node2insert = (listNode*)malloc(sizeof(listNode));
+
+	/* 리스트가 비어있고, 첫 번째 노드 생성일 경우 */
+	if (h->first == NULL)
+	{
+		insertFirst(h, key);
+		return 0;
+	}
+
+	p = h->first;
+
+	while (p != NULL) {
+		/* 새로운 노드의 삽입 위치가 리스트의 첫 노드 앞인 경우 */
+		if (p == h->first && p->key > key)
+		{
+			insertFirst(h, key);
+			return 0;
+		}
+		/* 현재 탐색중인 노드의 키값이 입력받은 키값보다 큰 경우*/
+		else if (p->key > key)
+		{
+			node2insert->key = key;
+
+			node2insert->llink = p->llink;
+			p->llink->rlink = node2insert;
+
+			node2insert->rlink = p;
+			p->llink = node2insert;
+
+			return 0;
+		}
+		p = p->rlink;
+	}
+
+	insertLast(h, key);
+	return 0;
+
 	return 0;
 }
 
@@ -289,6 +328,31 @@ int insertNode(headNode* h, int key) {
  * list에서 key에 대한 노드 삭제
  */
 int deleteNode(headNode* h, int key) {
+
+
+	listNode* p;
+	listNode* lastnode = (listNode*)malloc(sizeof(listNode));
+
+	/* 리스트가 비어있고, 첫 번째 노드 생성일 경우 */
+	if (h->first == NULL)
+	{
+		insertFirst(h, key);
+		return 0;
+	}
+
+	p = h->first;
+
+	while (p != NULL) {
+		if (p->rlink == NULL)
+		{
+			lastnode->key = key;
+			lastnode->llink = p;
+			lastnode->rlink = NULL;
+			p->rlink = lastnode;
+			break;
+		}
+		p = p->rlink;
+	}
 
 	return 1;
 }
