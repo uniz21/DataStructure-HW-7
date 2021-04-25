@@ -109,30 +109,83 @@ int main()
 		case 'q': case 'Q':
 			freeList(headnode);
 			break;
+		/*case 'x':
+			freeList(&headnode);
+			break;*/
 		default:
 			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
 			break;
 		}
-
 	}while(command != 'q' && command != 'Q');
 
-	return 1;
+	return 0;
 }
 
 
 int initialize(headNode** h) {
 
-
 	headNode* temp = (headNode*)malloc(sizeof(headNode));
 	temp->first = NULL;
 	*h = temp;
 
-	return 1;
-}
-
-int freeList(headNode* h){
 	return 0;
 }
+
+int freeList(headNode* h) {
+	
+	listNode* p;
+	listNode* prev;
+
+	if (h->first->llink != NULL)
+	{
+		headNode** x = h;
+		listNode** z = *x;
+		p = *z;
+
+		while (p != NULL)
+		{
+			prev = p->llink;
+
+			p = p->rlink;
+			free(prev);
+		}
+		free(z);
+	}
+	else
+	{
+		p = h->first;
+
+		while (p != NULL)
+		{
+			prev = p->llink;
+
+			p = p->rlink;
+			free(prev);
+		}
+		free(h);
+	}
+
+	return 0;
+}
+
+//int freeList(headNode** h) {
+//	headNode* t = *h;
+//	listNode* p;
+//	listNode* prev;
+//	
+//	p = t->first;
+//	
+//	while (p != NULL)
+//		{
+//		prev = p->llink;
+//	
+//		p = p->rlink;
+//		free(prev);
+//	}
+//	
+//	free(t);
+//	return 0;
+//}
 
 
 void printList(headNode* h) {
@@ -274,6 +327,25 @@ int deleteFirst(headNode* h) {
  */
 int invertList(headNode* h) {
 
+	listNode* nextnode = NULL;
+	listNode* lastnode = NULL;
+
+	listNode* p;
+
+	p = h->first;
+
+	while (p != NULL)
+	{
+		if (p->rlink == NULL) lastnode = p;
+		nextnode = p->rlink;
+		p->rlink = p->llink;
+		p->llink = nextnode;
+
+		p = nextnode;
+	}
+
+	h->first = lastnode;
+
 	return 0;
 }
 
@@ -318,7 +390,6 @@ int insertNode(headNode* h, int key) {
 	}
 
 	insertLast(h, key);
-	return 0;
 
 	return 0;
 }
@@ -329,32 +400,35 @@ int insertNode(headNode* h, int key) {
  */
 int deleteNode(headNode* h, int key) {
 
-
 	listNode* p;
-	listNode* lastnode = (listNode*)malloc(sizeof(listNode));
-
-	/* 리스트가 비어있고, 첫 번째 노드 생성일 경우 */
-	if (h->first == NULL)
-	{
-		insertFirst(h, key);
-		return 0;
-	}
 
 	p = h->first;
 
 	while (p != NULL) {
-		if (p->rlink == NULL)
+		if (p == h->first && p->key == key)
 		{
-			lastnode->key = key;
-			lastnode->llink = p;
-			lastnode->rlink = NULL;
-			p->rlink = lastnode;
-			break;
+			deleteFirst(h);
+			return 0;
+		}
+		else if (p->rlink == NULL && p->key == key)
+		{
+			deleteLast(h);
+			return 0;
+		}
+		else if (p->key==key)
+		{
+			p->llink->rlink = p->rlink;
+			p->rlink->llink = p->llink;
+			free(p);
+			return 0;
 		}
 		p = p->rlink;
 	}
 
-	return 1;
+	//모든 노드 탐색이 끝날 때까지 삭제할 노드를 찾지 못했다면
+	printf("There is no node corresponding to the key value.");
+
+	return 0;
 }
 
 
