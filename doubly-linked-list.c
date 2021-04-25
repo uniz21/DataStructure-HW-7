@@ -20,7 +20,7 @@ typedef struct Node {
 	int key;
 	struct Node* llink;
 	struct Node* rlink;
-} listNode;
+}listNode;
 
 
 
@@ -121,11 +121,11 @@ int main()
 
 
 int initialize(headNode** h) {
-	
-	headNode *temp = (headNode*)malloc(sizeof(headNode));
-	temp->first=NULL;
-	*h=temp;
 
+
+	headNode* temp = (headNode*)malloc(sizeof(headNode));
+	temp->first = NULL;
+	*h = temp;
 
 	return 1;
 }
@@ -165,6 +165,30 @@ void printList(headNode* h) {
  */
 int insertLast(headNode* h, int key) {
 
+	listNode* p;
+	listNode* lastnode = (listNode*)malloc(sizeof(listNode));
+
+	/* 리스트가 비어있고, 첫 번째 노드 생성일 경우 */
+	if (h->first == NULL)
+	{
+		insertFirst(h, key);
+		return 0;
+	}
+
+	p = h->first;
+
+	while (p != NULL) {
+		if (p->rlink = NULL)
+		{
+			lastnode->key = key;
+			lastnode->llink = p;
+			lastnode->rlink = NULL;
+			p->rlink = lastnode;
+			break;
+		}
+		p = p->rlink;
+	}
+
 	return 0;
 }
 
@@ -175,6 +199,26 @@ int insertLast(headNode* h, int key) {
  */
 int deleteLast(headNode* h) {
 
+	listNode* p;
+	listNode* prev;
+
+	p = h->first;
+
+	while (p != NULL) {
+		if (p->llink = NULL && p->rlink == NULL)
+		{
+			deleteFirst(h);
+			break;
+		}
+		if (p->rlink = NULL)
+		{
+			prev = p->llink;
+			prev->rlink = NULL;
+			free(p);
+			break;
+		}
+		p = p->rlink;
+	}
 
 	return 0;
 }
@@ -185,6 +229,14 @@ int deleteLast(headNode* h) {
  * list 처음에 key에 대한 노드하나를 추가
  */
 int insertFirst(headNode* h, int key) {
+
+	listNode* firstnode = (listNode*)malloc(sizeof(listNode));
+
+	firstnode->key = key;
+	firstnode->llink = NULL;
+	firstnode->rlink = h->first;
+	h->first = firstnode;
+
 	return 0;
 }
 
@@ -192,7 +244,25 @@ int insertFirst(headNode* h, int key) {
  * list의 첫번째 노드 삭제
  */
 int deleteFirst(headNode* h) {
+	
+	listNode* p;
 
+	p = h->first;
+
+	if (p->rlink == NULL)
+	{
+		h->first = NULL;
+	}
+	else
+	{
+		listNode* secondnode;
+
+		secondnode = p->rlink;
+		secondnode->llink = NULL;
+		h->first = secondnode;
+	}
+
+	free(p);
 	return 0;
 }
 
