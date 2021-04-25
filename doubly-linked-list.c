@@ -57,6 +57,9 @@ int main()
 	int key;
 	headNode* headnode=NULL;
 
+	/* printf("[----- [윤용진]  [2016039040] -----]\n"); */
+	printf("[----- [Yoon YongJin]  [2016039040] -----]\n");
+
 	do{
 		printf("----------------------------------------------------------------\n");
 		printf("                     Doubly Linked  List                        \n");
@@ -513,5 +516,3 @@ int deleteNode(headNode* h, int key) {
 
 	return 0;
 }
-
-
